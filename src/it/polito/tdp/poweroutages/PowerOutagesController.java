@@ -8,6 +8,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.poweroutages.model.Model;
+import it.polito.tdp.poweroutages.model.NeighborNerc;
+import it.polito.tdp.poweroutages.model.Nerc;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -32,7 +34,7 @@ public class PowerOutagesController {
     private Button btnCreaGrafo; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbBoxNerc"
-    private ComboBox<?> cmbBoxNerc; // Value injected by FXMLLoader
+    private ComboBox<Nerc> cmbBoxNerc; // Value injected by FXMLLoader
 
     @FXML // fx:id="btnVisualizzaVicini"
     private Button btnVisualizzaVicini; // Value injected by FXMLLoader
@@ -45,17 +47,24 @@ public class PowerOutagesController {
 
     @FXML
     void doCreaGrafo(ActionEvent event) {
-
+    	this.model.creaGrafo();
     }
 
     @FXML
     void doSimula(ActionEvent event) {
-
+    	
     }
 
     @FXML
     void doVisualizzaVicini(ActionEvent event) {
-
+    	this.txtResult.clear();
+    	if(this.cmbBoxNerc.getValue() == null){
+    		this.txtResult.setText("SELEZIONARE UN NERC");
+    	} else {
+    		for(NeighborNerc n : this.model.getCorrelatedNeighbors(this.cmbBoxNerc.getValue())){
+        		txtResult.appendText(n.toString() + "\n");
+        	}
+    	}
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
@@ -71,6 +80,7 @@ public class PowerOutagesController {
     
     public void setModel(Model model) {
 		this.model = model;
+		this.cmbBoxNerc.getItems().addAll(this.model.getNercs());
 
 	}
 }
